@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "@aztec/barretenberg": "^2.1.42",
+    "@aztec/sdk": "^2.1.45",
     "@noir-lang/aztec_backend": "^0.10.0",
     "@noir-lang/barretenberg": "^2.18.0",
     "@noir-lang/noir_wasm": "^0.10.0",
