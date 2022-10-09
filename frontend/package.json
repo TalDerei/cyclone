@@ -10,22 +10,29 @@
     "copy-wasm": "cp ./node_modules/@aztec/barretenberg/wasm/barretenberg.wasm ./public/ && cp ./node_modules/@aztec/barretenberg/worker.js ./public/"
   },
   "dependencies": {
+    "@aztec/barretenberg": "^2.1.45",
     "@aztec/bridge-clients": "^0.1.62",
-    "@aztec/sdk": "^2.1.45",
+    "@aztec/sdk": "2.1.45",
     "@ethersproject/providers": "^5.7.1",
-    "ethers": "^5.7.1",
-    "next": "^12.3.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "@noir-lang/aztec_backend": "^0.12.0",
+    "@noir-lang/barretenberg": "^2.19.0",
+    "@noir-lang/noir_wasm": "^0.10.0",
+    "@types/node": "^16.7.13",
+    "ethers": "^5.6.8",
+    "next": "12.1.6",
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
     "reactstrap": "^9.0.2",
     "three": "^0.144.0",
-    "vanta": "^0.5.22",
-    "@types/node": "^16.7.13"
+    "vanta": "^0.5.22"
   },
   "devDependencies": {
-    "@types/react": "18.0.21",
-    "eslint": "8.23.1",
-    "eslint-config-next": "12.3.1"
+    "@types/node": "17.0.35",
+    "@types/react": "18.0.9",
+    "@types/react-dom": "18.0.5",
+    "eslint": "8.16.0",
+    "eslint-config-next": "12.1.6",
+    "typescript": "4.7.2"
   },
   "browserslist": {
     "production": [

@@ -17,13 +17,21 @@ import {
     TxSettlementTime,
     TxId,
   } from "@aztec/sdk";
-
   import { randomBytes } from "crypto";
-
   import {
-    registerAccount
+    depositEthToAztec
   } from "./utils";
-  
+
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { BigNumber, Contract, ContractFactory, utils } from "ethers";
+import { expect } from "chai";
+import { readFileSync } from 'fs';
+import { compile, acir_from_bytes } from '@noir-lang/noir_wasm';
+// import { setup_generic_prover_and_verifier, create_proof, verify_proof } from '@noir-lang/barretenberg/dest/client_proofs';
+// import { BarretenbergWasm } from '@noir-lang/barretenberg/dest/wasm';
+// import { SinglePedersen } from '@noir-lang/barretenberg/dest/crypto/pedersen';
+// import { Schnorr } from '@noir-lang/barretenberg/dest/crypto/schnorr';
+// import { serialise_public_inputs } from '@noir-lang/aztec_backend';
 
 export default function Commitment () {
     const [userAccount, setUserAddress] = useState({AztecSdkUser});
@@ -42,45 +50,60 @@ export default function Commitment () {
       registerUser();
     }
 
-    async function renderDeposit() {
-      deposit();
+    let renderProveDeposit = () => {
+      proveDeposit();
+    }
+
+    async function proveDeposit() {
+      // Need to modify these inputs to match what's returned from the SDK
+
+      // let acirByteArray = path_to_uint8array(path.resolve(__dirname, '../circuits/build/p.acir'));
+      // let acir = acir_from_bytes(acirByteArray);
+
+      // let merkleProof = tree.proof(0);
+      // let note_hash_path = merkleProof.pathElements;
+      
+      // let abi = {
+      //   recipient: recipient,
+      //   priv_key: `0x` + sender_priv_key.toString('hex'),
+      //   note_root: `0x` + note_root, 
+      //   index: 0,
+      //   note_hash_path: [
+      //     `0x` + note_hash_path[0],
+      //     `0x` + note_hash_path[1],
+      //     `0x` + note_hash_path[2],
+      //   ],
+      //   secret: `0x` + transfers[0].secret.toString('hex'),
+      //   return: [`0x` + transfers[0].nullifier.toString('hex'), recipient],
+      // };
+
+      // let [prover, verifier] = await setup_generic_prover_and_verifier(acir);
+      
+      // const proof = await create_proof(prover, acir, abi);
+
+      // const verified = await verify_proof(verifier, proof);
+
+      // console.log("verifier is: " + verifier);
     }
 
     async function registerUser() {
-      const alias = "woosso";
       const depositTokenQuantity = ethers.utils
-      .parseEther("1")
-      .toBigInt();
-    const recoverySigner = await sdk.createSchnorrSigner(randomBytes(32));
-    let recoverPublicKey = recoverySigner.getPublicKey();
-
-    const assetId = sdk.getAssetIdByAddress(EthAddress.ZERO);
-    console.log(assetId)
-    const deposit = { assetId, value: depositTokenQuantity };
-    console.log(deposit)
-    const txFee = (await sdk.getRegisterFees(deposit.assetId))[TxSettlementTime];
-    console.log(txFee)
-
-     const controller = await sdk.createRegisterController(
+        .parseEther("1")
+        .toBigInt();
+  
+      let txId = await depositEthToAztec(
+        walletAddress,
         publicKeyNew,
-        alias, 
-        privateKeyNew,
-        spendingSigner.getPublicKey(),
-        recoverPublicKey, 
-        0,
-        txFee,
-        walletAddress
+        depositTokenQuantity,
+        TxSettlementTime.NEXT_ROLLUP,
+        sdk,
       );
-
-    // console.log("registration txId", txId);
-    // console.log(
-    //   "lookup tx on explorer",
-    //   `https://aztec-connect-testnet-explorer.aztec.network/goerli/tx/${txId.toString()}`
-    // );
-    }
-
-    async function deposit() {
-      console.log("depsosit");
+  
+      console.log("deposit txId", txId);
+      console.log(
+        "lookup tx on explorer",
+        `https://aztec-connect-testnet-explorer.aztec.network/goerli/tx/${txId.toString()}`
+      );
     }
 
     async function InitializeSDK() {
@@ -109,7 +132,7 @@ export default function Commitment () {
 
       // Generate privacy keys which enables decrypting the notes and calculating the account balance
       console.log("Generate the user's privacy keypair");
-      const { publicKey, privateKey } = await sdk.generateAccountKeyPair(walletAddress);
+      const { publicKey, privateKey } = await sdk.generateAccountKeyPair(userAddress);
       let accounts = await ethereum.request({
         method: "eth_requestAccounts",
       });
@@ -128,7 +151,7 @@ export default function Commitment () {
       setUserAddress(account);
 
       // Generate user's spending key and register it
-      const spendingPrivateKey = await sdk.generateSpendingKeyPair(walletAddress);
+      const spendingPrivateKey = await sdk.generateSpendingKeyPair(userAddress);
       console.log("Spending key is:" + spendingPrivateKey)
       // Create Aztec signer using spending key
       const signer = await sdk.createSchnorrSigner(spendingPrivateKey);
@@ -165,7 +188,13 @@ export default function Commitment () {
     return (
       <main ref={vantaRef}>
       <section class="general">
-      <div className="container">
+        <div class="homepage">
+          <big><u>Cyclone</u></big>
+          <br></br>
+          <br></br>
+          <div class="homepag-sub">
+            <small>Proving interactions on Aztec using Noir</small>
+          </div>
           <div class="button-group">
               <button class="button button1 b1" onClick={renderSDK}>Create Privacy and Spending Keys</button>
           </div>
@@ -173,7 +202,7 @@ export default function Commitment () {
               <button class="button button1 b1" onClick={renderRegisterUser}>Register a User</button>
           </div>
           <div class="button-group">
-              <button class="button button1 b1" onClick={renderDeposit}>Deposit ETH</button>
+              <button class="button button1 b1" onClick={renderProveDeposit}>Generate Zero-Knowledge Proof of Deposit on Aztec</button>
           </div>
       </div>
       </section>
