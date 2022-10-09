@@ -45,6 +45,7 @@ contract Poll is Ownable, ReentrancyGuard {
         }
         for (uint i = 0; i < _choices.length; i++) {
             choices[_choices[i]] = true;
+            votes[_choices[i]] = 0;
         }
     }
 
@@ -59,7 +60,7 @@ contract Poll is Ownable, ReentrancyGuard {
         root = newRoot;
     }
 
-    function updateSubRoot(uint256[] memory newCommitments) public onlyOwner() {
+    function updateRoot(uint256[] memory newCommitments) public onlyOwner() {
         for (uint i = 0; i < newCommitments.length; i++) {
             commitments[newCommitments[i]] = true;
         }
