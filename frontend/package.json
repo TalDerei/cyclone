@@ -1,0 +1,42 @@
+{
+  "name": "cyclone",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "copy-wasm": "cp ./node_modules/@aztec/barretenberg/wasm/barretenberg.wasm ./public/ && cp ./node_modules/@aztec/barretenberg/worker.js ./public/"
+  },
+  "dependencies": {
+    "@aztec/bridge-clients": "^0.1.62",
+    "@aztec/sdk": "^2.1.45",
+    "@ethersproject/providers": "^5.7.1",
+    "ethers": "^5.7.1",
+    "next": "^12.3.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "reactstrap": "^9.0.2",
+    "three": "^0.144.0",
+    "vanta": "^0.5.22",
+    "@types/node": "^16.7.13"
+  },
+  "devDependencies": {
+    "@types/react": "18.0.21",
+    "eslint": "8.23.1",
+    "eslint-config-next": "12.3.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
